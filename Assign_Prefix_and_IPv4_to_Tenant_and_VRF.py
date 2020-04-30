@@ -39,8 +39,11 @@ class NewPrefixandIPAssignment(Script):
     )
     prefix_assignment = ObjectVar(
         description="Select Parent Prefix to be assigned.",
-        queryset = Prefix.objects.filter(
-            id='43219' #172.28.77.0/24 # statically assigned parent prefix 
+        queryset = Prefix.objects.all(
+            widget=APISelect(
+                api_url='/api/ipam/aggregates/',
+                display_field='prefix',
+            ) 
         )
     )
     prefix_length = IntegerVar(
