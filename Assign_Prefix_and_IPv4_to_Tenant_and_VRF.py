@@ -16,6 +16,7 @@ from netaddr import *
 from ipam.constants import *
 from ipam.models import IPAddress, Prefix, VRF
 from tenancy.models import Tenant, TenantGroup
+from utilities.forms import APISelect
 from extras.scripts import *
 
 
@@ -39,12 +40,12 @@ class NewPrefixandIPAssignment(Script):
     )
     prefix_assignment = ObjectVar(
         description="Select Parent Prefix to be assigned.",
-        queryset = Prefix.objects.all(
+        queryset = Prefix.objects.all(),
             widget=APISelect(
-                api_url='/api/ipam/aggregates/',
+                api_url='/api/ipam/prefixes/',
                 display_field='prefix',
-            ) 
-        )
+                additional_query_params={'prefix': ['172.28.100.0/24']}
+            )
     )
     prefix_length = IntegerVar(
         description = "Select size of prefix desired.",
@@ -59,7 +60,7 @@ class NewPrefixandIPAssignment(Script):
     def run(self, data):
 
         # pynetbox variables
-        nb = pynetbox.api(url='http://localhost:80', token='generate a new token here')
+        nb = pynetbox.api(url='http://localhost:80', token='yourtokenhere')
         # defining variables based on user input from Class #
         tenant = data['tenant_name']
         input_vrf = data['vrf_assignment']
@@ -126,4 +127,5 @@ class NewPrefixandIPAssignment(Script):
 
 
         return (output)
+
 
